@@ -6,18 +6,23 @@ import Table from './Table';
 import Add from './Add';
 import Edit from './Edit';
 
-import { employeesData } from '../../data';
 import { collection, getDocs } from "firebase/firestore";
+import { db } from '../../config/firestore'
 
 const Dashboard = ({ setIsAuthenticated }) => {
-  const [employees, setEmployees] = useState(employeesData);
+  const [employees, setEmployees] = useState();
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [isAdding, setIsAdding] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
+  const getEmployees = async () => {
+    const querySnapshot = await getDocs(collection(db, "employees"));
+    const employees = querySnapshot.docs.map(doc => ({id: doc.id, ...doc.data()}))
+    setEmployees(employees)
+  }
+
   useEffect(() => {
-    const data = JSON.parse(localStorage.getItem('employees_data'));
-    if (data !== null && Object.keys(data).length !== 0) setEmployees(data);
+    getEmployees()
   }, []);
 
   const handleEdit = id => {
@@ -39,6 +44,8 @@ const Dashboard = ({ setIsAuthenticated }) => {
       if (result.value) {
         const [employee] = employees.filter(employee => employee.id === id);
 
+        // TODO delete document
+
         Swal.fire({
           icon: 'success',
           title: 'Deleted!',
@@ -48,7 +55,6 @@ const Dashboard = ({ setIsAuthenticated }) => {
         });
 
         const employeesCopy = employees.filter(employee => employee.id !== id);
-        localStorage.setItem('employees_data', JSON.stringify(employeesCopy));
         setEmployees(employeesCopy);
       }
     });

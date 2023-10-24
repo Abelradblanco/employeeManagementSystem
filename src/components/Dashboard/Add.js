@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc } from "firebase/firestore"; 
 import { db } from '../../config/firestore'
 
-const Add = ({ employees, setEmployees, setIsAdding, getEmployees }) => { //pulling it in
+
+const Add = ({ employees, setEmployees, setIsAdding, getEmployees }) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -23,9 +24,7 @@ const Add = ({ employees, setEmployees, setIsAdding, getEmployees }) => { //pull
       });
     }
 
-    const id = employees.length + 1;
     const newEmployee = {
-      id,
       firstName,
       lastName,
       email,
@@ -35,13 +34,11 @@ const Add = ({ employees, setEmployees, setIsAdding, getEmployees }) => { //pull
 
     employees.push(newEmployee);
 
-
-  
-    try{
+    try {
       await addDoc(collection(db, "employees"), {
-      ...newEmployee
-     });      
-    }catch(error){
+        ...newEmployee
+      });
+    } catch (error) {
       console.log(error)
     }
 

@@ -10,6 +10,7 @@ const Login = ({ setIsAuthenticated }) => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    
     const auth = getAuth();
 
     if (document.activeElement.name ==='Login'){
